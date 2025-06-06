@@ -27,3 +27,6 @@ dist-ssr
 
 # Vite
 .vite
+
+#Firebase
+.firebase
