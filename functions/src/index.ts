@@ -3,7 +3,7 @@ import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 
 const TomorrowIoApiKey = defineSecret("TOMORROWIO_API_KEY");
-const mapBoxApiKey = defineSecret("MAPBOX_API_KEY");
+const mapBoxApiKey = defineSecret("VITE_MAPBOX_API_KEY");
 
 export const realtimeWeather = onRequest({ secrets: [TomorrowIoApiKey] },async (request, response) => {
     const location = request.query.location;
