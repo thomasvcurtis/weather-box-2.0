@@ -1,11 +1,16 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
+import cors from 'cors'
 
 const TomorrowIoApiKey = defineSecret("TOMORROWIO_API_KEY");
 const mapBoxApiKey = defineSecret("VITE_MAPBOX_API_KEY");
 
-export const realtimeWeather = onRequest({ secrets: [TomorrowIoApiKey] },async (request, response) => {
+const corsHandler = cors({ origin: true });
+
+export const realtimeWeather = onRequest({ secrets: [TomorrowIoApiKey] }, async (request, response) => {
+
+  return corsHandler(request, response, async () => {
     const location = request.query.location;
     const units = request.query.units;
     const apiKey = TomorrowIoApiKey.value();
@@ -31,10 +36,12 @@ export const realtimeWeather = onRequest({ secrets: [TomorrowIoApiKey] },async (
       logger.error("Unexpected error in realtimeWeather", error);
       response.status(500).send({ error: "Internal Server Error" });
     }
-  }
-);
+  });
+});
 
-export const reverseGeocoding = onRequest({ secrets: [mapBoxApiKey] },async (request, response) => {
+export const reverseGeocoding = onRequest({ secrets: [mapBoxApiKey] }, async (request, response) => {
+
+  return corsHandler(request, response, async () => {
     const longitude = request.query.longitude;
     const latitude = request.query.latitude;
     const apiKey = mapBoxApiKey.value();
@@ -65,6 +72,6 @@ export const reverseGeocoding = onRequest({ secrets: [mapBoxApiKey] },async (req
       logger.error("Unexpected error in reverseGeocoding ", error);
       response.status(500).send({ error: "Internal Server Error" });
     }
-  }
-);
+  });
+});
 

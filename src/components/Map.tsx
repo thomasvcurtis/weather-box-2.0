@@ -2,6 +2,8 @@ import { useRef, useEffect, useState } from "react";
 import mapboxgl, { Map } from "mapbox-gl";
 import type { LngLatLike } from "mapbox-gl";
 import { Box, Paper } from "@mui/material";
+import { useAtom } from "jotai";
+import { MapCoordinate } from '../atoms/mapCoordinates'
 
 // Default map settings
 const DEFAULT_CENTER: [number, number] = [-74.006, 40.7128];
@@ -12,6 +14,7 @@ export default function MapBox() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const [center] = useState<[number, number]>(DEFAULT_CENTER);
+  const [, setCoordinates] = useAtom(MapCoordinate);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -23,6 +26,12 @@ export default function MapBox() {
       zoom: DEFAULT_ZOOM,
     });
 
+    mapRef.current.on("move", () => {
+      if (!mapRef.current) return;
+      const mapCenter = mapRef.current.getCenter();
+      setCoordinates([mapCenter.lng, mapCenter.lat]);
+    });
+    
   }, []);
 
   return (
@@ -33,6 +42,7 @@ export default function MapBox() {
         width: "100%",
         borderRadius: 2,
         overflow: "hidden",
+        position: "relative",
       }}
     >
       <Box
@@ -40,9 +50,21 @@ export default function MapBox() {
         sx={{
           height: "100%",
           width: "100%",
-          "& .mapboxgl-canvas": {
-            borderRadius: "inherit",
-          },
+        }}
+      />
+      <Box
+        component="img"
+        src="/target.svg"
+        alt="map target"
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "40px",
+          height: "40px",
+          pointerEvents: "none",
+          zIndex: 1,
         }}
       />
     </Paper>

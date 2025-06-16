@@ -1,5 +1,7 @@
 import { Typography, Box, Container } from "@mui/material";
+import Grid from '@mui/material/Grid';
 import MapBox from "./components/Map";
+import WeatherDisplay from "./components/WeatherDisplay";
 
 function App() {
   return (
@@ -7,9 +9,16 @@ function App() {
       <Typography variant="h2" align="center" sx={{ mb: 3 }}>
         Weather Box
       </Typography>
-      <Box sx={{ height: 'calc(100% - 100px)' }}>
-        <MapBox />
-      </Box>
+      <Grid container spacing={3} direction="column">
+        <Grid size={{ xs: 12 }}>
+          <WeatherDisplay />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ height: 'calc(100vh - 350px)' }}>
+            <MapBox />
+          </Box>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
